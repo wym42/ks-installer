@@ -18,12 +18,16 @@ spec:
           regex: container_accelerator_.+  # 暂时只要 GPU 信息
           sourceLabels:
             - __name__
+        - action: drop    # cadvsior （命名空间为monitoring）也会收集一次这个信息，没必要，而且也会干扰计算
+          regex: monitoring
+          sourceLabels:
+            - container_label_io_kubernetes_pod_namespace
         - action: replace # cadvsior 按照 prometheus-operator 生成的config是没有node的信息的，我们这里从instance中解析出来，保证有node这个指标
           regex: (.*):(.*)
           targetLabel: node
           replacement: ${1}
           sourceLabels:
-            - container_label_io_kubernetes_pod_name
+            - instance
         - action: replace
           regex: (.*)
           sourceLabels:

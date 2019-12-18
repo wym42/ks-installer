@@ -35,6 +35,12 @@ spec:
             ))
           record: node:node_num_cpu:sum
         - expr: |
+            count by (node) (container_accelerator_memory_total_bytes{job="cadvsior", namespace!="kube-system", namespace!="monitoring", pod_name!=""})
+          record: node:node_num_gpu:usage
+        - expr: |
+            count by (node) (container_accelerator_memory_total_bytes{job="cadvsior", namespace="kube-system", pod_name!=""})
+          record: node:node_num_gpu:total
+        - expr: |
             avg(irate(node_cpu_seconds_total{job="node-exporter",mode="used"}[5m]))
           record: :node_cpu_utilisation:avg1m
         - expr: |
